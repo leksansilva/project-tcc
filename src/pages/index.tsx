@@ -1,8 +1,8 @@
+import { prisma } from "@/lib/prisma";
 import { Post } from "@prisma/client";
 import { GetServerSideProps } from "next";
 import Head from "next/head";
 import { FormEvent } from "react";
-import { prisma } from "./lib/prisma";
 
 export const getServerSideProps: GetServerSideProps = async () => {
   const data = await prisma.post.findMany();

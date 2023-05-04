@@ -1,4 +1,4 @@
-import { prisma } from "@/pages/lib/prisma";
+import { prisma } from "@/lib/prisma";
 import { Post } from "@prisma/client";
 import { NextApiRequest, NextApiResponse } from "next";
 
