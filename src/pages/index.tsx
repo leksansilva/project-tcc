@@ -1,5 +1,7 @@
+import { Post } from "@prisma/client";
 import { GetServerSideProps } from "next";
 import Head from "next/head";
+import { FormEvent } from "react";
 import { prisma } from "./lib/prisma";
 
 export const getServerSideProps: GetServerSideProps = async () => {
@@ -16,25 +18,42 @@ export const getServerSideProps: GetServerSideProps = async () => {
   };
 };
 
-interface Post {
-  id: string;
-  username: string;
-  comment: string;
-  createdAt: string;
-}
-
 interface HomeProps {
   posts: Post[];
 }
 
 export default function Home({ posts }: HomeProps) {
+  const onSubmitPost = async (ev: FormEvent) => {
+    const data = new FormData(ev.currentTarget as HTMLFormElement);
+    const username = data.get("username") as string;
+    const comment = data.get("comment") as string;
+    const createdAt = new Date(data.get("createdAt") as string).toJSON();
+    if (!username || !comment || !createdAt) return;
+    try {
+      const result = await fetch("api/posts/create", {
+        method: "POST",
+        body: JSON.stringify({
+          username,
+          comment,
+          createdAt,
+        }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const jsonData = await result.json();
+      console.log(jsonData);
+    } catch (err) {
+      console.log(err);
+    }
+  };
   return (
     <div>
       <Head>
         <title>TCC | Home</title>
       </Head>
       <main className="p-20 flex flex-col md:flex-row gap-20">
-        <form className="md:w-1/2">
+        <form onSubmit={onSubmitPost} className="md:w-1/2">
           <div className="space-y-12">
             <div className="border-b border-gray-900/10 pb-12">
               <h2 className="text-base font-semibold leading-7 text-gray-900">
@@ -45,7 +64,7 @@ export default function Home({ posts }: HomeProps) {
               </p>
 
               <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
-                <div className="col-span-full">
+                <div className="col-span-4">
                   <label
                     htmlFor="username"
                     className="block text-sm font-medium leading-6 text-gray-900"
@@ -55,6 +74,7 @@ export default function Home({ posts }: HomeProps) {
                   <div className="mt-2">
                     <div className="p-1 flex rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 ">
                       <input
+                        required
                         type="text"
                         name="username"
                         id="username"
@@ -65,18 +85,40 @@ export default function Home({ posts }: HomeProps) {
                     </div>
                   </div>
                 </div>
+                <div className="col-span-2">
+                  <label
+                    htmlFor="createdAt"
+                    className="block text-sm font-medium leading-6 text-gray-900"
+                  >
+                    Data
+                  </label>
+                  <div className="mt-2">
+                    <div className="p-1 flex rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 ">
+                      <input
+                        required
+                        type="date"
+                        name="createdAt"
+                        id="createdAt"
+                        autoComplete="createdAt"
+                        className="block flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
+                        placeholder="alex.evernever"
+                      />
+                    </div>
+                  </div>
+                </div>
 
                 <div className="col-span-full">
                   <label
-                    htmlFor="about"
+                    htmlFor="comment"
                     className="block text-sm font-medium leading-6 text-gray-900"
                   >
                     Comentário
                   </label>
                   <div className="mt-2">
                     <textarea
-                      id="about"
-                      name="about"
+                      required
+                      id="comment"
+                      name="comment"
                       rows={3}
                       className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                       defaultValue={""}
@@ -103,8 +145,11 @@ export default function Home({ posts }: HomeProps) {
           </div>
         </form>
         <div className="md:w-1/2">
-          <h1>Posts</h1>
-          <ul role="list" className="divide-y divide-gray-100 ">
+          <h1>Posts ({posts.length})</h1>
+          <ul
+            role="list"
+            className="divide-y divide-gray-100 max-h-[70vh] overflow-auto p-5 "
+          >
             {posts.map((post) => (
               <li key={post.id} className="flex justify-between gap-x-6 py-5">
                 <div className="flex gap-x-4">
