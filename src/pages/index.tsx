@@ -25,7 +25,7 @@ interface HomeProps {
 }
 
 export default function Home({ data }: HomeProps) {
-  const [posts, setPosts] = useState<Post[]>(data);
+  const [posts, setPosts] = useState<Post[]>(data.reverse());
   const [loading, setLoading] = useState(false);
 
   const onSubmitPost = async (ev: FormEvent) => {
@@ -50,13 +50,15 @@ export default function Home({ data }: HomeProps) {
       });
       const jsonData = await result.json();
       console.log(jsonData);
-      setPosts((prev) => [...prev, jsonData]);
+      setPosts((prev) => [jsonData, ...prev]);
     } catch (err) {
       console.log(err);
     } finally {
       setLoading(false);
+      document.getElementById("reset")?.click();
     }
   };
+
   return (
     <div>
       <Head>

@@ -1,3 +1,4 @@
+import { formatDate } from "@/utils/formatDate";
 import { Post } from "@prisma/client";
 
 interface ListProps {
@@ -6,6 +7,7 @@ interface ListProps {
 }
 
 export default function List({ posts, loading }: ListProps) {
+  console.log(posts);
   return (
     <div className="md:w-1/2">
       <div className="flex">
@@ -47,7 +49,7 @@ export default function List({ posts, loading }: ListProps) {
             </div>
             <div className="hidden sm:flex sm:flex-col sm:items-end">
               <p className="text-sm leading-6 text-gray-900">
-                {new Date(post.createdAt).toLocaleDateString("pt-BR")}
+                {formatDate(post.createdAt.toString())}
               </p>
             </div>
           </li>

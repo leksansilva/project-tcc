@@ -85,7 +85,8 @@ export default function Form({ onSubmit, loading }: FormProps) {
 
       <div className="mt-6 flex items-center justify-end gap-x-6">
         <button
-          type="button"
+          id="reset"
+          type="reset"
           className="text-sm font-semibold leading-6 text-gray-900"
         >
           Cancelar
