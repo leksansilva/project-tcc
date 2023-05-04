@@ -62,7 +62,7 @@ export default function Home({ data }: HomeProps) {
       <Head>
         <title>TCC | Home</title>
       </Head>
-      <main className="p-20 flex flex-col md:flex-row gap-20">
+      <main className=" p-5 md:p-20 flex flex-col md:flex-row gap-20">
         <Form loading={loading} onSubmit={onSubmitPost} />
         <List loading={loading} posts={posts} />
       </main>

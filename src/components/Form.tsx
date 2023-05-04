@@ -18,7 +18,7 @@ export default function Form({ onSubmit, loading }: FormProps) {
           </p>
 
           <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
-            <div className="col-span-4">
+            <div className="col-span-full md:col-span-4">
               <label
                 htmlFor="username"
                 className="block text-sm font-medium leading-6 text-gray-900"
@@ -39,7 +39,7 @@ export default function Form({ onSubmit, loading }: FormProps) {
                 </div>
               </div>
             </div>
-            <div className="col-span-2">
+            <div className="col-span-full md:col-span-2">
               <label
                 htmlFor="createdAt"
                 className="block text-sm font-medium leading-6 text-gray-900"
